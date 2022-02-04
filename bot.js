@@ -54,6 +54,7 @@ bot.onText(/\/register(.+)/, (msg, match) => {
       return utils.setRegistry(data);
     }
   }).then(() => {
+    bot.sendMessage(process.env.ADMIN_CHAT, `New user ${msg.chat.username}`);
     bot.sendMessage(chatId, `Hello ${name}! Set a maximum threshold with /setAlert <amount (integer) in Gwei> or get the current gas price with /getGasPrice`);
     return;
   }).catch(err => {
