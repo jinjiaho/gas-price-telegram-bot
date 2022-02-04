@@ -23,10 +23,13 @@ exports.buildCron = (seconds) => {
     if (seconds === 0) {
       return `* * * * * *`;
     }
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    const cronStr = `${formatCron(s)} ${formatCron(minutes)} ${formatCron(hours)} * * *`;
+    let cronStr;
+    let minutes = Math.floor(seconds / 60);
+    if (minutes > 0) {
+      cronStr = `*/${minutes} * * * *`;
+    } else {
+      cronStr = `*/${seconds} * * * * *`;
+    }
     if (!cron.validate(cronStr)) {
       reject(`Invalid cron from ${seconds}s: ${cronStr}`)
     }
@@ -47,10 +50,6 @@ exports.validateInterval = (interval) => {
     }
     resolve(interval);
   })
-}
-
-const formatCron = (num) => {
-  return num ? `*/${num}` : '*';
 }
 
 const writeJSONFile = (filePath, data) => {

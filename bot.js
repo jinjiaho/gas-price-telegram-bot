@@ -186,22 +186,18 @@ bot.onText(/\/pollStart/, (msg) => {
   let interval;
 
   if (isAdmin(msg.chat.id)) {
-    if (task) {
-      task.start();
-    } else {
-      utils.getConfig().then(config => {
-        interval = config.interval;
-        return utils.buildCron(config.interval);
-      }).then(cronStr => {
-        console.log("CRON STR", cronStr);
-        task = cron.schedule(cronStr, alertGasPrice);
-        return;
-      }).catch(err => {
-        bot.sendMessage(process.env.ADMIN_CHAT, `${err}`);
-        return;
-      })
-    }
-    bot.sendMessage(process.env.ADMIN_CHAT, `Task started, running every ${interval}s`)
+    utils.getConfig().then(config => {
+      interval = config.interval;
+      return utils.buildCron(config.interval);
+    }).then(cronStr => {
+      console.log("CRON STR", cronStr);
+      task = cron.schedule(cronStr, alertGasPrice);
+      bot.sendMessage(process.env.ADMIN_CHAT, `Task started, running every ${interval}s`)
+      return;
+    }).catch(err => {
+      bot.sendMessage(process.env.ADMIN_CHAT, `${err}`);
+      return;
+    })
   }
 });
 
